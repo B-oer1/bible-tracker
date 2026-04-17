@@ -2,10 +2,10 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>2‑Month Bible Reading Tracker</title>
-    <link rel="stylesheet" href="bible_tracker.css">
+    <link rel="stylesheet" href="bible_tracker.css" />
 </head>
 
 <body>
@@ -13,8 +13,8 @@
         <div class="header">
             <h1>My 2‑Month Bible Reading Plan</h1>
             <div class="name-input" id="nameSection">
-                <input type="text" id="nameInput" placeholder="Enter your name">
-                <button onclick="savename()">Start</button>
+                <input type="text" id="nameInput" placeholder="Enter your name" />
+                <button onclick="saveName()">Start</button>
             </div>
             <div class="welcome" id="welcomeText" style="display:none;"></div>
         </div>
@@ -41,11 +41,11 @@
 
         <div class="content" id="content"></div>
 
-        <button class="reset-button" onclick="resetprogress()">Reset All Progress</button>
+        <button class="reset-button" onclick="resetProgress()">Reset All Progress</button>
     </div>
 
     <script>
-        const readingplan = [
+        const readingPlan = [
             {
                 section: "Days 1–5", days: [
                     { day: 1, readings: ["Genesis 1–8", "Psalms 1–4", "Matthew 1–3"] },
@@ -158,95 +158,98 @@
 
         let progress = {};
 
-        function loadprogress() {
-            const saved = localstorage.getitem('twoMonthProgress');
+        function loadProgress() {
+            const saved = localStorage.getItem("twoMonthProgress");
             if (saved) progress = JSON.parse(saved);
-            const name = localstorage.getitem('userName');
+            const name = localStorage.getItem("userName");
             if (name) {
-                document.getelementbyid('nameSection').style.display = 'none';
-                const w = document.getelementbyid('welcomeText');
-                w.style.display = 'block';
-                w.textcontent = `Welcome back, ${name}!`;
+                document.getElementById("nameSection").style.display = "none";
+                const w = document.getElementById("welcomeText");
+                w.style.display = "block";
+                w.textContent = `Welcome back, ${name}!`;
             }
         }
 
-        function savename() {
-            const name = document.getelementbyid('nameInput').value.trim();
+        function saveName() {
+            const name = document.getElementById("nameInput").value.trim();
             if (name) {
-                localStorage.setitem('userName', name);
-                document.getelementbyid('nameSection').style.display = 'none';
-                const w = document.getelementbyid('welcomeText');
-                w.style.display = 'block';
+                localStorage.setItem("userName", name);
+                document.getElementById("nameSection").style.display = "none";
+                const w = document.getElementById("welcomeText");
+                w.style.display = "block";
                 w.textContent = `Welcome, ${name}!`;
             }
         }
 
-        function togglesection(idx) {
-            document.getelementbyid('sec' + idx).classList.toggle('active');
+        function toggleSection(i) {
+            document.getElementById("sec" + i).classList.toggle("active");
         }
 
-        function updateday(id) {
+        function updateDay(id) {
             progress[id] = !progress[id];
-            localstorage.setitem('twoMonthProgress', JSON.stringify(progress));
-            updatestats();
+            localStorage.setItem("twoMonthProgress", JSON.stringify(progress));
+            updateStats();
         }
 
-        function updatestats() {
+        function updateStats() {
             const done = Object.values(progress).filter(v => v).length;
-            const percent = Math.round(done / 60 * 100);
-            document.getelementbyid('completedDays').textcontentt = done;
-            document.getelementbyid('totalReadings').textcontent = done * 3;
-            document.getelementbyid('remainingDays').textcontent = 60 - done;
-            const bar = document.getelementbyid('progressBar');
-            bar.style.width = percent + '%';
-            bar.textcontent = percent + '%';
+            const percent = Math.round((done / 60) * 100);
+            document.getElementById("completedDays").textContent = done;
+            document.getElementById("totalReadings").textContent = done * 3;
+            document.getElementById("remainingDays").textContent = 60 - done;
+            const bar = document.getElementById("progressBar");
+            bar.style.width = percent + "%";
+            bar.textContent = percent + "%";
         }
 
         function renderPlan() {
-            const box = document.getelementbyid('content');
-            box.innerHTML = '';
-            readingplan.foreach((sec, i) => {
-                const wrapper = document.createelement('div');
-                wrapper.classname = 'week-section';
-                const header = document.createelement('div');
-                header.classname = 'week-header';
-                header.onclick = () => togglesection(i);
+            const container = document.getElementById("content");
+            container.innerHTML = "";
+            readingPlan.forEach((sec, i) => {
+                const wrap = document.createElement("div");
+                wrap.className = "week-section";
+                const header = document.createElement("div");
+                header.className = "week-header";
+                header.onclick = () => toggleSection(i);
                 header.innerHTML = `<span>${sec.section}</span><span>▼</span>`;
-                const body = document.createelement('div');
-                body.classname = 'week-content'; body.id = 'sec' + i;
-                sec.days.foreach(d => {
-                    const id = 'day' + d.day;
-                    const checked = progress[id] ? 'checked' : '';
-                    const row = document.createelement('div');
-                    row.classname = 'day-item';
+                const body = document.createElement("div");
+                body.className = "week-content";
+                body.id = "sec" + i;
+                sec.days.forEach(d => {
+                    const id = "day" + d.day;
+                    const checked = progress[id] ? "checked" : "";
+                    const row = document.createElement("div");
+                    row.className = "day-item";
                     row.innerHTML = `
-          <div class="checkbox-container">
-            <input type="checkbox" ${checked} onchange="updateDay('${id}')">
-          </div>
-          <div class="day-info">
-            <div class="day-date">Day ${d.day}</div>
-            <div class="reading"><span class="reading-label">Morning:</span> ${d.readings[0]}</div>
-            <div class="reading"><span class="reading-label">Afternoon:</span> ${d.readings[1]}</div>
-            <div class="reading"><span class="reading-label">Night:</span> ${d.readings[2]}</div>
-          </div>`;
-                    body.appendchild(row);
+            <div class="checkbox-container">
+              <input type="checkbox" ${checked} onchange="updateDay('${id}')">
+            </div>
+            <div class="day-info">
+              <div class="day-date">Day ${d.day}</div>
+              <div class="reading"><span class="reading-label">Morning:</span> ${d.readings[0]}</div>
+              <div class="reading"><span class="reading-label">Afternoon:</span> ${d.readings[1]}</div>
+              <div class="reading"><span class="reading-label">Night:</span> ${d.readings[2]}</div>
+            </div>`;
+                    body.appendChild(row);
                 });
-                wrapper.appendchild(header);
-                wrapper.appendchild(body);
-                box.appendchild(wrapper);
+                wrap.appendChild(header);
+                wrap.appendChild(body);
+                container.appendChild(wrap);
             });
         }
 
-        function resetprogress() {
-            if (confirm('Reset all progress?')) {
+        function resetProgress() {
+            if (confirm("Reset all progress?")) {
                 progress = {};
-                localstorage.removeitem('twoMonthProgress');
-                localstorage.removeitem('userName');
+                localStorage.removeItem("twoMonthProgress");
+                localStorage.removeItem("userName");
                 location.reload();
             }
         }
 
-        loadprogress(); renderplan(); updatestats();
+        loadProgress();
+        renderPlan();
+        updateStats();
     </script>
 </body>
 
