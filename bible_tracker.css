@@ -4,24 +4,33 @@
     box-sizing: border-box;
 }
 
+:root {
+    --pri-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --sec-color: #495057;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--pri-color);
     min-height: 100vh;
     padding: 20px;
 }
 
 .container {
     max-width: 800px;
-    margin: 0 auto;
     background: white;
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     overflow: hidden;
 }
 
+.container,
+.name-input {
+    margin: 0 auto;
+}
+
 .header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--pri-color);
     color: white;
     padding: 30px 20px;
     text-align: center;
@@ -37,24 +46,25 @@ body {
     display: flex;
     gap: 10px;
     max-width: 400px;
-    margin: 0 auto;
 }
 
 .name-input input {
     flex: 1;
     padding: 12px 16px;
-    border: none;
-    border-radius: 25px;
     font-size: 16px;
     outline: none;
+}
+
+.name-input input,
+.name-input button {
+    border: none;
+    border-radius: 25px;
 }
 
 .name-input button {
     padding: 12px 24px;
     background: white;
     color: #667eea;
-    border: none;
-    border-radius: 25px;
     font-weight: 600;
     cursor: pointer;
     transition: transform 0.2s;
@@ -135,7 +145,7 @@ body {
 }
 
 .week-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--pri-color);
     color: white;
     padding: 15px;
     font-weight: 600;
@@ -187,7 +197,7 @@ input[type="checkbox"] {
 
 .day-date {
     font-weight: 600;
-    color: #495057;
+    color: var(--sec-color);
     margin-bottom: 5px;
 }
 
@@ -198,7 +208,7 @@ input[type="checkbox"] {
 
 .reading-label {
     font-weight: 600;
-    color: #495057;
+    color: var(--sec-color);
     display: inline-block;
     min-width: 70px;
 }
