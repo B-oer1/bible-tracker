@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2‑Month Bible Reading Tracker</title>
+    <link rel="stylesheet" href="styles/bible_tracker.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>My 2‑Month Bible Reading Plan</h1>
+            <div class="name-input" id="nameSection">
+                <input type="text" id="nameInput" placeholder="Enter your name">
+                <button onclick="saveName()">Start</button>
+            </div>
+            <div class="welcome" id="welcomeText" style="display:none;"></div>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar">0%</div>
+            </div>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number" id="completedDays">0</div>
+                    <div class="stat-label">Days Completed</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="totalReadings">0</div>
+                    <div class="stat-label">Readings Done</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="remainingDays">60</div>
+                    <div class="stat-label">Days Remaining</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content" id="content"></div>
+
+        <button class="reset-button" onclick="resetProgress()">Reset All Progress</button>
+    </div>
+
+    <script>
+        const readingPlan = [
+            {
+                section: "Days 1–5", days: [
+                    { day: 1, readings: ["Genesis 1–8", "Psalms 1–4", "Matthew 1–3"] },
+                    { day: 2, readings: ["Genesis 9–16", "Psalms 5–8", "Matthew 4–6"] },
+                    { day: 3, readings: ["Genesis 17–24", "Psalms 9–12", "Matthew 7–9"] },
+                    { day: 4, readings: ["Genesis 25–32", "Psalms 13–16", "Matthew 10–12"] },
+                    { day: 5, readings: ["Genesis 33–40", "Psalms 17–20", "Matthew 13–15"] }
+                ]
+            },
+            {
+                section: "Days 6–10", days: [
+                    { day: 6, readings: ["Genesis 41–50", "Psalms 21–24", "Matthew 16–18"] },
+                    { day: 7, readings: ["Exodus 1–10", "Psalms 25–28", "Matthew 19–21"] },
+                    { day: 8, readings: ["Exodus 11–20", "Psalms 29–32", "Matthew 22–24"] },
+                    { day: 9, readings: ["Exodus 21–30", "Psalms 33–36", "Matthew 25–28"] },
+                    { day: 10, readings: ["Exodus 31–40", "Psalms 37–40", "Mark 1–4"] }
+                ]
+            },
+            {
+                section: "Days 11–15", days: [
+                    { day: 11, readings: ["Leviticus 1–10", "Psalms 41–44", "Mark 5–7"] },
+                    { day: 12, readings: ["Leviticus 11–20", "Psalms 45–48", "Mark 8–10"] },
+                    { day: 13, readings: ["Leviticus 21–27", "Psalms 49–52", "Mark 11–13"] },
+                    { day: 14, readings: ["Numbers 1–10", "Psalms 53–56", "Mark 14–16"] },
+                    { day: 15, readings: ["Numbers 11–20", "Psalms 57–60", "Luke 1–3"] }
+                ]
+            },
+            {
+                section: "Days 16–20", days: [
+                    { day: 16, readings: ["Numbers 21–30", "Psalms 61–64", "Luke 4–6"] },
+                    { day: 17, readings: ["Numbers 31–36 + Deut 1–4", "Psalms 65–68", "Luke 7–9"] },
+                    { day: 18, readings: ["Deuteronomy 5–14", "Psalms 69–72", "Luke 10–12"] },
+                    { day: 19, readings: ["Deuteronomy 15–24", "Psalms 73–76", "Luke 13–15"] },
+                    { day: 20, readings: ["Deuteronomy 25–34", "Psalms 77–80", "Luke 16–18"] }
+                ]
+            },
+            {
+                section: "Days 21–25", days: [
+                    { day: 21, readings: ["Joshua 1–10", "Psalms 81–84", "Luke 19–21"] },
+                    { day: 22, readings: ["Joshua 11–24", "Psalms 85–88", "Luke 22–24"] },
+                    { day: 23, readings: ["Judges 1–10", "Psalms 89–92", "John 1–3"] },
+                    { day: 24, readings: ["Judges 11–21 + Ruth", "Psalms 93–96", "John 4–6"] },
+                    { day: 25, readings: ["1 Samuel 1–10", "Psalms 97–100", "John 7–9"] }
+                ]
+            },
+            {
+                section: "Days 26–30", days: [
+                    { day: 26, readings: ["1 Samuel 11–20", "Psalms 101–104", "John 10–12"] },
+                    { day: 27, readings: ["1 Samuel 21–31 + 2 Sam 1–4", "Psalms 105–108", "John 13–15"] },
+                    { day: 28, readings: ["2 Samuel 5–18", "Psalms 109–112", "John 16–18"] },
+                    { day: 29, readings: ["2 Samuel 19–24 + 1 Kings 1–2", "Psalms 113–116", "John 19–21"] },
+                    { day: 30, readings: ["1 Kings 3–14", "Psalms 117–119", "Acts 1–3"] }
+                ]
+            },
+            {
+                section: "Days 31–35", days: [
+                    { day: 31, readings: ["1 Kings 15–22", "Psalms 120–123", "Acts 4–6"] },
+                    { day: 32, readings: ["2 Kings 1–12", "Psalms 124–127", "Acts 7–9"] },
+                    { day: 33, readings: ["2 Kings 13–25", "Psalms 128–131", "Acts 10–12"] },
+                    { day: 34, readings: ["1 Chronicles 1–12", "Psalms 132–135", "Acts 13–15"] },
+                    { day: 35, readings: ["1 Chronicles 13–29", "Psalms 136–139", "Acts 16–18"] }
+                ]
+            },
+            {
+                section: "Days 36–40", days: [
+                    { day: 36, readings: ["2 Chronicles 1–12", "Psalms 140–143", "Acts 19–21"] },
+                    { day: 37, readings: ["2 Chronicles 13–28", "Psalms 144–147", "Acts 22–24"] },
+                    { day: 38, readings: ["2 Chronicles 29–36 + Ezra 1–2", "Psalms 148–150", "Acts 25–28"] },
+                    { day: 39, readings: ["Ezra 3–10 + Nehemiah 1–4", "Proverbs 1–4", "Romans 1–3"] },
+                    { day: 40, readings: ["Nehemiah 5–13 + Esther", "Proverbs 5–8", "Romans 4–6"] }
+                ]
+            },
+            {
+                section: "Days 41–45", days: [
+                    { day: 41, readings: ["Job 1–14", "Proverbs 9–12", "Romans 7–9"] },
+                    { day: 42, readings: ["Job 15–28", "Proverbs 13–16", "Romans 10–12"] },
+                    { day: 43, readings: ["Job 29–42", "Proverbs 17–20", "Romans 13–16"] },
+                    { day: 44, readings: ["Isaiah 1–20", "Proverbs 21–24", "1 Corinthians 1–4"] },
+                    { day: 45, readings: ["Isaiah 21–40", "Proverbs 25–28", "1 Corinthians 5–8"] }
+                ]
+            },
+            {
+                section: "Days 46–50", days: [
+                    { day: 46, readings: ["Isaiah 41–66", "Proverbs 29–31", "1 Corinthians 9–12"] },
+                    { day: 47, readings: ["Jeremiah 1–20", "Ecclesiastes 1–4", "1 Corinthians 13–16"] },
+                    { day: 48, readings: ["Jeremiah 21–40", "Ecclesiastes 5–8", "2 Corinthians 1–5"] },
+                    { day: 49, readings: ["Jeremiah 41–52 + Lamentations", "Ecclesiastes 9–12", "2 Corinthians 6–10"] },
+                    { day: 50, readings: ["Ezekiel 1–20", "Song of Solomon", "2 Corinthians 11–13"] }
+                ]
+            },
+            {
+                section: "Days 51–55", days: [
+                    { day: 51, readings: ["Ezekiel 21–40", "Daniel 1–3", "Galatians"] },
+                    { day: 52, readings: ["Ezekiel 41–48 + Daniel 4–6", "Daniel 7–9", "Ephesians"] },
+                    { day: 53, readings: ["Daniel 10–12 + Hosea", "Joel + Amos", "Philippians"] },
+                    { day: 54, readings: ["Obadiah + Jonah + Micah", "Nahum + Habakkuk", "Colossians"] },
+                    { day: 55, readings: ["Zephaniah + Haggai + Zechariah", "Malachi", "1 & 2 Thessalonians"] }
+                ]
+            },
+            {
+                section: "Days 56–60", days: [
+                    { day: 56, readings: ["1 Timothy + 2 Timothy", "Titus + Philemon", "Hebrews 1–7"] },
+                    { day: 57, readings: ["Hebrews 8–13", "James", "1 Peter"] },
+                    { day: 58, readings: ["2 Peter", "1–3 John", "Jude"] },
+                    { day: 59, readings: ["Revelation 1–11", "", ""] },
+                    { day: 60, readings: ["Revelation 12–22", "", ""] }
+                ]
+            }
+        ];
+
+        let progress = {};
+
+        function loadProgress() {
+            const saved = localStorage.getItem('twoMonthProgress');
+            if (saved) progress = JSON.parse(saved);
+            const name = localStorage.getItem('userName');
+            if (name) {
+                document.getElementById('nameSection').style.display = 'none';
+                const w = document.getElementById('welcomeText');
+                w.style.display = 'block';
+                w.textContent = `Welcome back, ${name}!`;
+            }
+        }
+
+        function saveName() {
+            const name = document.getElementById('nameInput').value.trim();
+            if (name) {
+                localStorage.setItem('userName', name);
+                document.getElementById('nameSection').style.display = 'none';
+                const w = document.getElementById('welcomeText');
+                w.style.display = 'block';
+                w.textContent = `Welcome, ${name}!`;
+            }
+        }
+
+        function toggleSection(idx) {
+            document.getElementById('sec' + idx).classList.toggle('active');
+        }
+
+        function updateDay(id) {
+            progress[id] = !progress[id];
+            localStorage.setItem('twoMonthProgress', JSON.stringify(progress));
+            updateStats();
+        }
+
+        function updateStats() {
+            const done = Object.values(progress).filter(v => v).length;
+            const percent = Math.round(done / 60 * 100);
+            document.getElementById('completedDays').textContent = done;
+            document.getElementById('totalReadings').textContent = done * 3;
+            document.getElementById('remainingDays').textContent = 60 - done;
+            const bar = document.getElementById('progressBar');
+            bar.style.width = percent + '%';
+            bar.textContent = percent + '%';
+        }
+
+        function renderPlan() {
+            const box = document.getElementById('content');
+            box.innerHTML = '';
+            readingPlan.forEach((sec, i) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'week-section';
+                const header = document.createElement('div');
+                header.className = 'week-header';
+                header.onclick = () => toggleSection(i);
+                header.innerHTML = `<span>${sec.section}</span><span>▼</span>`;
+                const body = document.createElement('div');
+                body.className = 'week-content'; body.id = 'sec' + i;
+                sec.days.forEach(d => {
+                    const id = 'day' + d.day;
+                    const checked = progress[id] ? 'checked' : '';
+                    const row = document.createElement('div');
+                    row.className = 'day-item';
+                    row.innerHTML = `
+          <div class="checkbox-container">
+            <input type="checkbox" ${checked} onchange="updateDay('${id}')">
+          </div>
+          <div class="day-info">
+            <div class="day-date">Day ${d.day}</div>
+            <div class="reading"><span class="reading-label">Morning:</span> ${d.readings[0]}</div>
+            <div class="reading"><span class="reading-label">Afternoon:</span> ${d.readings[1]}</div>
+            <div class="reading"><span class="reading-label">Night:</span> ${d.readings[2]}</div>
+          </div>`;
+                    body.appendChild(row);
+                });
+                wrapper.appendChild(header);
+                wrapper.appendChild(body);
+                box.appendChild(wrapper);
+            });
+        }
+
+        function resetProgress() {
+            if (confirm('Reset all progress?')) {
+                progress = {};
+                localStorage.removeItem('twoMonthProgress');
+                localStorage.removeItem('userName');
+                location.reload();
+            }
+        }
+
+        loadProgress(); renderPlan(); updateStats();
+    </script>
+</body>
+
+</html>
